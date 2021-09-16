@@ -1,5 +1,6 @@
 {
     order replace after encode
+    order http_cache before reverse_proxy
 }
 
 mirrors.v2raya.org {
@@ -25,6 +26,13 @@ mirrors.v2raya.org {
                 tls_server_name github-releases.githubusercontent.com
             }
         }
+        http_cache {
+            default_max_age 24h
+            cache_type file 
+            path /tmp/cache
+            match_path /
+            cache_key "{http.request.method} {http.request.host}{http.request.uri.path}"
+        }
     }
     handle_path /gh/api/v2fly* {
         rewrite * /repos/v2fly{path}
@@ -33,6 +41,12 @@ mirrors.v2raya.org {
             transport http {
                 tls_server_name api.github.com
             }
+        }
+        http_cache {
+            default_max_age 24h
+            cache_type file 
+            path /tmp/cache
+            match_path /
         }
     }
     handle_path /gh/raw/v2fly* {

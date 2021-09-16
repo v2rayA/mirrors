@@ -1,0 +1,58 @@
+{
+    order replace after encode
+}
+
+mirrors.v2raya.org {
+    replace api.github.com/repos/v2fly/ mirrors.v2raya.org/gh/api/v2fly/
+    replace github.com/v2fly/v2ray-core/releases/download/ mirrors.v2raya.org/gh/v2fly/releases/download/
+    replace raw.githubusercontent.com/v2fly mirrors.v2raya.org/gh/raw/v2fly
+    replace re "github\.com/v2fly/test/raw" "mirrors.v2raya.org/gh/raw/v2fly/$1"
+    handle_path /gh/v2fly/releases/download* {
+        rewrite * /v2fly/v2ray-core/releases/download{path}
+        reverse_proxy https://github.com {
+            header_up Host github.com
+            transport http {
+                tls_server_name github.com
+            }
+            header_down Location github-releases.githubusercontent.com mirrors.v2raya.org/gh/releases
+        }
+    }
+    # FIXME: vulnerability
+    handle_path /gh/releases* {
+        reverse_proxy https://github-releases.githubusercontent.com {
+            header_up Host github-releases.githubusercontent.com
+            transport http {
+                tls_server_name github-releases.githubusercontent.com
+            }
+        }
+    }
+    handle_path /gh/api/v2fly* {
+        rewrite * /repos/v2fly{path}
+        reverse_proxy https://api.github.com {
+            header_up Host api.github.com
+            transport http {
+                tls_server_name api.github.com
+            }
+        }
+    }
+    handle_path /gh/raw/v2fly* {
+        rewrite * /v2fly{path}
+        reverse_proxy https://raw.githubusercontent.com {
+            header_up Host raw.githubusercontent.com
+            header_up Accept-Encoding identity
+            transport http {
+                tls_server_name raw.githubusercontent.com
+            }
+        }
+    }
+    handle_path /go.sh {
+        rewrite * /v2fly/fhs-install-v2ray/raw/master/install-release.sh
+        reverse_proxy https://github.com {
+            header_up Host github.com
+            transport http {
+                tls_server_name github.com
+            }
+            header_down Location raw.githubusercontent.com mirrors.v2raya.org/gh/raw
+        }
+    }
+}

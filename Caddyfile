@@ -4,25 +4,58 @@
 }
 
 mirrors.v2raya.org {
-    replace api.github.com/repos/v2fly/ mirrors.v2raya.org/gh/api/v2fly/
-    replace github.com/v2fly/v2ray-core/releases/ mirrors.v2raya.org/gh/v2fly/releases/
-    replace raw.githubusercontent.com/v2fly mirrors.v2raya.org/gh/raw/v2fly
-    replace raw.githubusercontent.workers.dev/v2fly mirrors.v2raya.org/gh/raw/v2fly
-    replace re "github\.com/v2fly/test/raw" "mirrors.v2raya.org/gh/raw/v2fly/$1"
-    handle_path /gh/v2fly/releases* {
-        rewrite * /v2fly/v2ray-core/releases{path}
+    handle_path /go.sh {
+        redir https://hubmirror.v2raya.org/raw/v2fly/fhs-install-v2ray/master/install-release.sh
+    }
+    handle_path /alpine-go.sh {
+        redir https://hubmirror.v2raya.org/raw/v2fly/alpinelinux-install-v2ray/master/install-release.sh
+    }
+    route /* {
+        redir https://v2raya.org
+    }
+}
+
+hubmirror.v2raya.org {
+    replace api.github.com/repos/v2fly/ hubmirror.v2raya.org/api/v2fly/
+    replace github.com/v2fly/ hubmirror.v2raya.org/v2fly/
+    replace raw.githubusercontent.com/v2fly/ hubmirror.v2raya.org/raw/v2fly/
+    replace raw.githubusercontent.workers.dev/v2fly/ hubmirror.v2raya.org/raw/v2fly/
+    replace re "github\.com/v2fly/(.+?)/raw/" "hubmirror.v2raya.org/raw/v2fly/$1/"
+    handle_path /v2fly* {
+        rewrite * /v2fly{path}
         reverse_proxy https://github.com {
             header_up Host github.com
+            header_up Referer mirrors.v2raya.org github.com
             transport http {
                 tls_server_name github.com
             }
-            header_down Location github-releases.githubusercontent.com mirrors.v2raya.org/gh/releases
-            header_down Location github.com/v2fly/v2ray-core/releases/ mirrors.v2raya.org/gh/v2fly/releases/
+            header_down Location github-releases.githubusercontent.com hubmirror.v2raya.org/releases
+            header_down Location github.com/v2fly/v2ray-core/releases/ hubmirror.v2raya.org/v2fly/releases/
             header_down Set-Cookie github.com mirrors.v2raya.org
+            header_down -Content-Security-Policy
+            header_down -Expect-Ct
+            header_down X-Pjax-Url github.com hubmirror.v2raya.org
         }
     }
+    handle_path /orgs/v2fly* {
+        rewrite * /orgs/v2fly{path}
+        reverse_proxy https://github.com {
+            header_up Host github.com
+            header_up Referer mirrors.v2raya.org github.com
+            transport http {
+                tls_server_name github.com
+            }
+            header_down Location github-releases.githubusercontent.com hubmirror.v2raya.org/releases
+            header_down Location github.com/v2fly/v2ray-core/releases/ hubmirror.v2raya.org/v2fly/releases/
+            header_down Set-Cookie github.com mirrors.v2raya.org
+            header_down -Content-Security-Policy
+            header_down -Expect-Ct
+            header_down X-Pjax-Url github.com hubmirror.v2raya.org
+        }
+    }
+
     # FIXME: vulnerability
-    handle_path /gh/releases* {
+    handle_path /releases* {
         reverse_proxy https://github-releases.githubusercontent.com {
             header_up Host github-releases.githubusercontent.com
             transport http {
@@ -37,7 +70,7 @@ mirrors.v2raya.org {
             cache_key "{http.request.method} {http.request.host}{http.request.uri.path}"
         }
     }
-    handle_path /gh/api/v2fly* {
+    handle_path /api/v2fly* {
         rewrite * /repos/v2fly{path}
         reverse_proxy https://api.github.com {
             header_up Host api.github.com
@@ -52,7 +85,7 @@ mirrors.v2raya.org {
             match_path /
         }
     }
-    handle_path /gh/raw/v2fly* {
+    handle_path /raw/v2fly* {
         rewrite * /v2fly{path}
         reverse_proxy https://raw.githubusercontent.com {
             header_up Host raw.githubusercontent.com
@@ -61,26 +94,16 @@ mirrors.v2raya.org {
                 tls_server_name raw.githubusercontent.com
             }
         }
-    }
-    
-    handle_path /go.sh {
-        rewrite * /v2fly/fhs-install-v2ray/raw/master/install-release.sh
-        reverse_proxy https://github.com {
-            header_up Host github.com
-            transport http {
-                tls_server_name github.com
-            }
-            header_down Location raw.githubusercontent.com mirrors.v2raya.org/gh/raw
+        http_cache {
+            default_max_age 24h
+            cache_type file 
+            path /tmp/cache
+            match_path /
         }
+
     }
-    handle_path /alpine-go.sh {
-        rewrite * /v2fly/alpinelinux-install-v2ray/raw/master/install-release.sh
-        reverse_proxy https://github.com {
-            header_up Host github.com
-            transport http {
-                tls_server_name github.com
-            }
-            header_down Location raw.githubusercontent.com mirrors.v2raya.org/gh/raw
-        }
+    route /* {
+        redir https://v2raya.org temporary   
     }
 }
+

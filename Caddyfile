@@ -70,7 +70,7 @@ hubmirror.v2raya.org {
             }
         }
         http_cache {
-            default_max_age 24h
+            default_max_age 720h
             cache_type file 
             path /tmp/cache
             match_path /

@@ -43,6 +43,7 @@ hubmirror.v2raya.org {
         reverse_proxy https://github.com {
             header_up Host github.com
             header_up Referer mirrors.v2raya.org github.com
+            header_up Accept-Encoding identity
             transport http {
                 tls_server_name github.com
             }
@@ -59,6 +60,7 @@ hubmirror.v2raya.org {
     handle_path /releases* {
         reverse_proxy https://github-releases.githubusercontent.com {
             header_up Host github-releases.githubusercontent.com
+            header_up Referer mirrors.v2raya.org github.com
             transport http {
                 tls_server_name github-releases.githubusercontent.com
             }
@@ -76,6 +78,7 @@ hubmirror.v2raya.org {
         reverse_proxy https://api.github.com {
             header_up Host api.github.com
             header_up Accept-Encoding identity
+            header_up Referer mirrors.v2raya.org github.com
             transport http {
                 tls_server_name api.github.com
             }
@@ -92,6 +95,7 @@ hubmirror.v2raya.org {
         reverse_proxy https://raw.githubusercontent.com {
             header_up Host raw.githubusercontent.com
             header_up Accept-Encoding identity
+            header_up Referer mirrors.v2raya.org github.com
             transport http {
                 tls_server_name raw.githubusercontent.com
             }

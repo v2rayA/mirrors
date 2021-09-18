@@ -16,6 +16,7 @@ mirrors.v2raya.org {
 }
 
 hubmirror.v2raya.org {
+    encode zstd gzip
     replace api.github.com/repos/v2fly/ hubmirror.v2raya.org/api/v2fly/
     replace github.com/v2fly/ hubmirror.v2raya.org/v2fly/
     replace raw.githubusercontent.com/v2fly/ hubmirror.v2raya.org/raw/v2fly/

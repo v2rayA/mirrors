@@ -21,8 +21,10 @@ hubmirror.v2raya.org {
     replace raw.githubusercontent.com/v2fly/ hubmirror.v2raya.org/raw/v2fly/
     replace raw.githubusercontent.workers.dev/v2fly/ hubmirror.v2raya.org/raw/v2fly/
     replace re "github\.com/v2fly/(.+?)/raw/" "hubmirror.v2raya.org/raw/v2fly/$1/"
-    handle_path /v2fly* {
-        rewrite * /v2fly{path}
+    @v2fly {
+        path /v2fly/* /v2fly
+    }
+    handle @v2fly {
         reverse_proxy https://github.com {
             header_up Host github.com
             header_up Referer mirrors.v2raya.org github.com
@@ -38,8 +40,10 @@ hubmirror.v2raya.org {
             header_down X-Pjax-Url github.com hubmirror.v2raya.org
         }
     }
-    handle_path /orgs/v2fly* {
-        rewrite * /orgs/v2fly{path}
+    @orgs_v2fly {
+        path /orgs/v2fly/* /orgs/v2fly
+    }
+    handle @orgs_v2fly {
         reverse_proxy https://github.com {
             header_up Host github.com
             header_up Referer mirrors.v2raya.org github.com
@@ -57,7 +61,7 @@ hubmirror.v2raya.org {
     }
 
     # FIXME: vulnerability
-    handle_path /releases* {
+    handle_path /releases/* {
         reverse_proxy https://github-releases.githubusercontent.com {
             header_up Host github-releases.githubusercontent.com
             header_up Referer mirrors.v2raya.org github.com
@@ -73,7 +77,7 @@ hubmirror.v2raya.org {
             cache_key "{http.request.method} {http.request.host}{http.request.uri.path}"
         }
     }
-    handle_path /api/v2fly* {
+    handle_path /api/v2fly/* {
         rewrite * /repos/v2fly{path}
         reverse_proxy https://api.github.com {
             header_up Host api.github.com
@@ -90,7 +94,7 @@ hubmirror.v2raya.org {
             match_path /
         }
     }
-    handle_path /raw/v2fly* {
+    handle_path /raw/v2fly/* {
         rewrite * /v2fly{path}
         reverse_proxy https://raw.githubusercontent.com {
             header_up Host raw.githubusercontent.com
@@ -112,4 +116,3 @@ hubmirror.v2raya.org {
         redir https://v2raya.org temporary   
     }
 }
-

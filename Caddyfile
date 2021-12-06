@@ -22,10 +22,18 @@ hubmirror.v2raya.org {
     replace raw.githubusercontent.com/v2fly/ hubmirror.v2raya.org/raw/v2fly/
     replace raw.githubusercontent.workers.dev/v2fly/ hubmirror.v2raya.org/raw/v2fly/
     replace re "github\.com/v2fly/(.+?)/raw/" "hubmirror.v2raya.org/raw/v2fly/$1/"
-    @v2fly {
+
+    replace api.github.com/repos/mzz2017/ hubmirror.v2raya.org/api/mzz2017/
+    replace github.com/mzz2017/ hubmirror.v2raya.org/mzz2017/
+    replace raw.githubusercontent.com/mzz2017/ hubmirror.v2raya.org/raw/mzz2017/
+    replace raw.githubusercontent.workers.dev/mzz2017/ hubmirror.v2raya.org/raw/mzz2017/
+    replace re "github\.com/mzz2017/(.+?)/raw/" "hubmirror.v2raya.org/raw/mzz2017/$1/"
+
+    @whitelist {
         path /v2fly/* /v2fly
+        path /mzz2017/* /mzz2017
     }
-    handle @v2fly {
+    handle @whitelist {
         reverse_proxy https://github.com {
             header_up Host github.com
             header_up Referer mirrors.v2raya.org github.com
@@ -34,7 +42,7 @@ hubmirror.v2raya.org {
                 tls_server_name github.com
             }
             header_down Location github-releases.githubusercontent.com hubmirror.v2raya.org/releases
-            header_down Location github.com/v2fly/v2ray-core/releases/ hubmirror.v2raya.org/v2fly/releases/
+#            header_down Location github.com/v2fly/v2ray-core/releases/ hubmirror.v2raya.org/v2fly/releases/
             header_down Set-Cookie github.com mirrors.v2raya.org
             header_down -Content-Security-Policy
             header_down -Expect-Ct
@@ -117,3 +125,4 @@ hubmirror.v2raya.org {
         redir https://v2raya.org temporary   
     }
 }
+

@@ -119,7 +119,23 @@ hubmirror.v2raya.org {
             path /tmp/cache
             match_path /
         }
-
+    }
+    handle_path /raw/mzz2017/* {
+        rewrite * /mzz2017{path}
+        reverse_proxy https://raw.githubusercontent.com {
+            header_up Host raw.githubusercontent.com
+            header_up Accept-Encoding identity
+            header_up Referer mirrors.v2raya.org github.com
+            transport http {
+                tls_server_name raw.githubusercontent.com
+            }
+        }
+        http_cache {
+            default_max_age 24h
+            cache_type file 
+            path /tmp/cache
+            match_path /
+        }
     }
     route /* {
         redir https://v2raya.org temporary   

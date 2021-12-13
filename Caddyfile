@@ -42,7 +42,9 @@ hubmirror.v2raya.org {
                 tls_server_name github.com
             }
             header_down Location github-releases.githubusercontent.com hubmirror.v2raya.org/releases
+            header_down Location objects.githubusercontent.com hubmirror.v2raya.org/objects
 #            header_down Location github.com/v2fly/v2ray-core/releases/ hubmirror.v2raya.org/v2fly/releases/
+            header_down Location raw.githubusercontent.com/ hubmirror.v2raya.org/raw/
             header_down Set-Cookie github.com mirrors.v2raya.org
             header_down -Content-Security-Policy
             header_down -Expect-Ct
@@ -61,6 +63,7 @@ hubmirror.v2raya.org {
                 tls_server_name github.com
             }
             header_down Location github-releases.githubusercontent.com hubmirror.v2raya.org/releases
+            header_down Location objects.githubusercontent.com hubmirror.v2raya.org/objects
             header_down Location github.com/v2fly/v2ray-core/releases/ hubmirror.v2raya.org/v2fly/releases/
             header_down Set-Cookie github.com mirrors.v2raya.org
             header_down -Content-Security-Policy
@@ -86,6 +89,24 @@ hubmirror.v2raya.org {
             cache_key "{http.request.method} {http.request.host}{http.request.uri.path}"
         }
     }
+    # FIXME: vulnerability
+    handle_path /objects/* {
+            reverse_proxy https://objects.githubusercontent.com {
+            header_up Host objects.githubusercontent.com
+            header_up Referer mirrors.v2raya.org github.com
+            transport http {
+                tls_server_name objects.githubusercontent.com
+            }
+        }
+        http_cache {
+            default_max_age 720h
+            cache_type file 
+            path /tmp/cache
+            match_path /
+            cache_key "{http.request.method} {http.request.host}{http.request.uri.path}"
+        }
+
+    }
     handle_path /api/v2fly/* {
         rewrite * /repos/v2fly{path}
         reverse_proxy https://api.github.com {
@@ -94,23 +115,6 @@ hubmirror.v2raya.org {
             header_up Referer mirrors.v2raya.org github.com
             transport http {
                 tls_server_name api.github.com
-            }
-        }
-        http_cache {
-            default_max_age 24h
-            cache_type file 
-            path /tmp/cache
-            match_path /
-        }
-    }
-    handle_path /raw/v2fly/* {
-        rewrite * /v2fly{path}
-        reverse_proxy https://raw.githubusercontent.com {
-            header_up Host raw.githubusercontent.com
-            header_up Accept-Encoding identity
-            header_up Referer mirrors.v2raya.org github.com
-            transport http {
-                tls_server_name raw.githubusercontent.com
             }
         }
         http_cache {
@@ -136,9 +140,27 @@ hubmirror.v2raya.org {
             path /tmp/cache
             match_path /
         }
+
+    }
+    handle_path /raw/v2fly/* {
+        rewrite * /v2fly{path}
+        reverse_proxy https://raw.githubusercontent.com {
+            header_up Host raw.githubusercontent.com
+            header_up Accept-Encoding identity
+            header_up Referer mirrors.v2raya.org github.com
+            transport http {
+                tls_server_name raw.githubusercontent.com
+            }
+        }
+        http_cache {
+            default_max_age 24h
+            cache_type file 
+            path /tmp/cache
+            match_path /
+        }
+
     }
     route /* {
         redir https://v2raya.org temporary   
     }
 }
-

@@ -15,6 +15,44 @@ mirrors.v2raya.org {
     }
 }
 
+resource.hubmirror.v2raya.org {
+    # FIXME: vulnerability
+    handle_path /releases/* {
+        reverse_proxy https://github-releases.githubusercontent.com {
+            header_up Host github-releases.githubusercontent.com
+            header_up Referer mirrors.v2raya.org github.com
+            transport http {
+                tls_server_name github-releases.githubusercontent.com
+            }
+        }
+        http_cache {
+            default_max_age 24h
+            cache_type file
+            path /tmp/cache
+            match_path /
+            cache_key "{http.request.method} {http.request.host}{http.request.uri.path}"
+        }
+    }
+    # FIXME: vulnerability
+    handle_path /objects/* {
+            reverse_proxy https://objects.githubusercontent.com {
+            header_up Host objects.githubusercontent.com
+            header_up Referer mirrors.v2raya.org github.com
+            transport http {
+                tls_server_name objects.githubusercontent.com
+            }
+        }
+        http_cache {
+            default_max_age 24h
+            cache_type file 
+            path /tmp/cache
+            match_path /
+            cache_key "{http.request.method} {http.request.host}{http.request.uri.path}"
+        }
+
+    }
+}
+
 hubmirror.v2raya.org {
     encode zstd gzip
     replace api.github.com/repos/v2fly/ hubmirror.v2raya.org/api/v2fly/
@@ -41,11 +79,11 @@ hubmirror.v2raya.org {
             transport http {
                 tls_server_name github.com
             }
-            header_down Location github-releases.githubusercontent.com hubmirror.v2raya.org/releases
-            header_down Location objects.githubusercontent.com hubmirror.v2raya.org/objects
-#            header_down Location github.com/v2fly/v2ray-core/releases/ hubmirror.v2raya.org/v2fly/releases/
+            header_down Location github-releases.githubusercontent.com resource.hubmirror.v2raya.org/releases
+            header_down Location objects.githubusercontent.com resource.hubmirror.v2raya.org/objects
             header_down Location raw.githubusercontent.com/ hubmirror.v2raya.org/raw/
-            header_down Set-Cookie github.com mirrors.v2raya.org
+            header_down Location github.com hubmirror.v2raya.org
+            header_down Set-Cookie github.com hubmirror.v2raya.org
             header_down -Content-Security-Policy
             header_down -Expect-Ct
             header_down X-Pjax-Url github.com hubmirror.v2raya.org
@@ -62,50 +100,14 @@ hubmirror.v2raya.org {
             transport http {
                 tls_server_name github.com
             }
-            header_down Location github-releases.githubusercontent.com hubmirror.v2raya.org/releases
-            header_down Location objects.githubusercontent.com hubmirror.v2raya.org/objects
-            header_down Location github.com/v2fly/v2ray-core/releases/ hubmirror.v2raya.org/v2fly/releases/
-            header_down Set-Cookie github.com mirrors.v2raya.org
+            header_down Location github-releases.githubusercontent.com resource.hubmirror.v2raya.org/releases
+            header_down Location objects.githubusercontent.com resource.hubmirror.v2raya.org/objects
+            header_down Location github.com hubmirror.v2raya.org
+            header_down Set-Cookie github.com hubmirror.v2raya.org
             header_down -Content-Security-Policy
             header_down -Expect-Ct
             header_down X-Pjax-Url github.com hubmirror.v2raya.org
         }
-    }
-
-    # FIXME: vulnerability
-    handle_path /releases/* {
-        reverse_proxy https://github-releases.githubusercontent.com {
-            header_up Host github-releases.githubusercontent.com
-            header_up Referer mirrors.v2raya.org github.com
-            transport http {
-                tls_server_name github-releases.githubusercontent.com
-            }
-        }
-        http_cache {
-            default_max_age 720h
-            cache_type file 
-            path /tmp/cache
-            match_path /
-            cache_key "{http.request.method} {http.request.host}{http.request.uri.path}"
-        }
-    }
-    # FIXME: vulnerability
-    handle_path /objects/* {
-            reverse_proxy https://objects.githubusercontent.com {
-            header_up Host objects.githubusercontent.com
-            header_up Referer mirrors.v2raya.org github.com
-            transport http {
-                tls_server_name objects.githubusercontent.com
-            }
-        }
-        http_cache {
-            default_max_age 720h
-            cache_type file 
-            path /tmp/cache
-            match_path /
-            cache_key "{http.request.method} {http.request.host}{http.request.uri.path}"
-        }
-
     }
     handle_path /api/v2fly/* {
         rewrite * /repos/v2fly{path}

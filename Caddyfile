@@ -11,11 +11,19 @@ mirrors.v2raya.org {
         redir https://hubmirror.v2raya.org/raw/v2fly/alpinelinux-install-v2ray/master/install-release.sh
     }
     route /* {
+        respond /robots.txt 200 {
+            body "User-agent: *
+    Disallow: /"
+        }
         redir https://v2raya.org
     }
 }
 
 resource.hubmirror.v2raya.org {
+    respond /robots.txt 200 {
+        body "User-agent: *
+Disallow: /"
+    }
     # FIXME: vulnerability
     handle_path /releases/* {
         reverse_proxy https://github-releases.githubusercontent.com {
@@ -163,6 +171,10 @@ hubmirror.v2raya.org {
 
     }
     route /* {
+        respond /robots.txt 200 {
+            body "User-agent: *
+    Disallow: /"
+        }
         redir https://v2raya.org temporary   
     }
 }

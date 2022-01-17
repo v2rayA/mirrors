@@ -69,7 +69,7 @@ hubmirror.v2raya.org {
     replace raw.githubusercontent.workers.dev/v2fly/ hubmirror.v2raya.org/raw/v2fly/
     replace re "github\.com/v2fly/(.+?)/raw/" "hubmirror.v2raya.org/raw/v2fly/$1/"
     
-    replace api.github.com/repos/v2fly/ hubmirror.v2raya.org/api/v2rayA/
+    replace api.github.com/repos/v2rayA/ hubmirror.v2raya.org/api/v2rayA/
     replace github.com/v2rayA/ hubmirror.v2raya.org/v2rayA/
     replace raw.githubusercontent.com/v2rayA/ hubmirror.v2raya.org/raw/v2rayA/
     replace raw.githubusercontent.workers.dev/v2rayA/ hubmirror.v2raya.org/raw/v2rayA/
@@ -127,6 +127,23 @@ hubmirror.v2raya.org {
     }
     handle_path /api/v2fly/* {
         rewrite * /repos/v2fly{path}
+        reverse_proxy https://api.github.com {
+            header_up Host api.github.com
+            header_up Accept-Encoding identity
+            header_up Referer mirrors.v2raya.org github.com
+            transport http {
+                tls_server_name api.github.com
+            }
+        }
+        http_cache {
+            default_max_age 10m
+            cache_type file
+            path /tmp/cache
+            match_path /
+        }
+    }
+    handle_path /api/v2rayA/* {
+        rewrite * /repos/v2rayA{path}
         reverse_proxy https://api.github.com {
             header_up Host api.github.com
             header_up Accept-Encoding identity

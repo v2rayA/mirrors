@@ -3,6 +3,12 @@
     order http_cache before reverse_proxy
 }
 
+apt.v2raya.org, apt.v2raya.mzz.pub {
+    reverse_proxy https://v2raya.github.io {
+        header_up Host apt.v2raya.mzz.pub
+    }
+}
+
 mirrors.v2raya.org {
     handle_path /go.sh {
         redir https://hubmirror.v2raya.org/raw/v2fly/fhs-install-v2ray/master/install-release.sh

@@ -1,6 +1,7 @@
 {
     order replace after encode
     order http_cache before reverse_proxy
+    order rate_limit before basicauth
 }
 
 apt.v2raya.org, apt.v2raya.mzz.pub {
@@ -29,6 +30,13 @@ resource.hubmirror.v2raya.org {
     respond /robots.txt 200 {
         body "User-agent: *
 Disallow: /"
+    }
+    rate_limit {
+        zone resource {
+            key    {remote_host}
+            events 10
+            window 10m
+        }
     }
     # FIXME: vulnerability
     handle_path /releases/* {
@@ -175,6 +183,14 @@ hubmirror.v2raya.org {
                 tls_server_name raw.githubusercontent.com
             }
         }
+        rate_limit {
+            distributed
+            zone resource {
+                key    {remote_host}
+                events 10
+                window 10m
+            }
+        }
     }
     handle_path /raw/v2fly/* {
         rewrite * /v2fly{path}
@@ -186,6 +202,14 @@ hubmirror.v2raya.org {
                 tls_server_name raw.githubusercontent.com
             }
         }
+        rate_limit {
+            distributed
+            zone resource {
+                key    {remote_host}
+                events 10
+                window 10m
+            }
+        }
     }
     handle_path /raw/v2rayA/* {
         rewrite * /v2rayA{path}
@@ -195,6 +219,14 @@ hubmirror.v2raya.org {
             header_up Referer mirrors.v2raya.org github.com
             transport http {
                 tls_server_name raw.githubusercontent.com
+            }
+        }
+        rate_limit {
+            distributed
+            zone resource {
+                key    {remote_host}
+                events 10
+                window 10m
             }
         }
     }

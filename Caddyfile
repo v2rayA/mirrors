@@ -34,8 +34,8 @@ Disallow: /"
     rate_limit {
         zone resource {
             key    {remote_host}
-            events 10
-            window 10m
+            events 20
+            window 20m
         }
     }
     # FIXME: vulnerability
@@ -187,8 +187,8 @@ hubmirror.v2raya.org {
             distributed
             zone resource {
                 key    {remote_host}
-                events 10
-                window 10m
+                events 20
+                window 20m
             }
         }
     }
@@ -206,8 +206,8 @@ hubmirror.v2raya.org {
             distributed
             zone resource {
                 key    {remote_host}
-                events 10
-                window 10m
+                events 20
+                window 20m
             }
         }
     }
@@ -225,8 +225,8 @@ hubmirror.v2raya.org {
             distributed
             zone resource {
                 key    {remote_host}
-                events 10
-                window 10m
+                events 20
+                window 20m
             }
         }
     }

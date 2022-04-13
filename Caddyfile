@@ -1,6 +1,6 @@
 {
     order replace after encode
-    order http_cache before reverse_proxy
+    order http_cache after replace
     order rate_limit before basicauth
 }
 

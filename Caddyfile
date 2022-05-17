@@ -4,13 +4,13 @@
     order rate_limit before basicauth
 }
 
-apt.v2raya.org, apt.v2raya.mzz.pub {
+http://apt.v2raya.org, http://apt.v2raya.mzz.pub {
     reverse_proxy https://v2raya.github.io {
         header_up Host apt.v2raya.mzz.pub
     }
 }
 
-mirrors.v2raya.org {
+http://mirrors.v2raya.org {
     handle_path /go.sh {
         redir https://hubmirror.v2raya.org/raw/v2fly/fhs-install-v2ray/master/install-release.sh
     }
@@ -26,7 +26,7 @@ mirrors.v2raya.org {
     }
 }
 
-resource.hubmirror.v2raya.org {
+http://hub-resource.v2raya.org {
     respond /robots.txt 200 {
         body "User-agent: *
 Disallow: /"
@@ -75,7 +75,7 @@ Disallow: /"
     }
 }
 
-hubmirror.v2raya.org {
+http://hubmirror.v2raya.org {
     encode zstd gzip
     replace api.github.com/repos/v2fly/ hubmirror.v2raya.org/api/v2fly/
     replace github.com/v2fly/ hubmirror.v2raya.org/v2fly/
@@ -108,8 +108,8 @@ hubmirror.v2raya.org {
             transport http {
                 tls_server_name github.com
             }
-            header_down Location github-releases.githubusercontent.com resource.hubmirror.v2raya.org/releases
-            header_down Location objects.githubusercontent.com resource.hubmirror.v2raya.org/objects
+            header_down Location github-releases.githubusercontent.com hub-resource.v2raya.org/releases
+            header_down Location objects.githubusercontent.com hub-resource.v2raya.org/objects
             header_down Location raw.githubusercontent.com/ hubmirror.v2raya.org/raw/
             header_down Location github.com hubmirror.v2raya.org
             header_down Set-Cookie github.com hubmirror.v2raya.org
@@ -130,8 +130,8 @@ hubmirror.v2raya.org {
             transport http {
                 tls_server_name github.com
             }
-            header_down Location github-releases.githubusercontent.com resource.hubmirror.v2raya.org/releases
-            header_down Location objects.githubusercontent.com resource.hubmirror.v2raya.org/objects
+            header_down Location github-releases.githubusercontent.com hub-resource.v2raya.org/releases
+            header_down Location objects.githubusercontent.com hub-resource.v2raya.org/objects
             header_down Location github.com hubmirror.v2raya.org
             header_down Set-Cookie github.com hubmirror.v2raya.org
             header_down -Content-Security-Policy

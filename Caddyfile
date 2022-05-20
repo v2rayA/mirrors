@@ -43,7 +43,7 @@ Disallow: /"
         reverse_proxy https://github-releases.githubusercontent.com {
             header_up Host github-releases.githubusercontent.com
             header_up Referer mirrors.v2raya.org github.com
-            header_down Cache-Control "max-age=300, public"
+            header_down Cache-Control "max-age=300"
             transport http {
                 tls_server_name github-releases.githubusercontent.com
             }
@@ -61,7 +61,7 @@ Disallow: /"
             reverse_proxy https://objects.githubusercontent.com {
             header_up Host objects.githubusercontent.com
             header_up Referer mirrors.v2raya.org github.com
-            header_down Cache-Control "max-age=300, public"
+            header_down Cache-Control "max-age=300"
             transport http {
                 tls_server_name objects.githubusercontent.com
             }

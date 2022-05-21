@@ -147,6 +147,12 @@ http://hubmirror.v2raya.org {
             header_up Host api.github.com
             header_up Accept-Encoding identity
             header_up Referer mirrors.v2raya.org github.com
+            header_up Authorization "Basic ******"
+            header_down -x-ratelimit-limit
+            header_down -x-ratelimit-remaining
+            header_down -x-ratelimit-used
+            header_down -x-ratelimit-resource
+            header_down -x-ratelimit-reset
             transport http {
                 tls_server_name api.github.com
             }
@@ -164,6 +170,12 @@ http://hubmirror.v2raya.org {
             header_up Host api.github.com
             header_up Accept-Encoding identity
             header_up Referer mirrors.v2raya.org github.com
+            header_up Authorization "Basic ******"
+            header_down -x-ratelimit-limit
+            header_down -x-ratelimit-remaining
+            header_down -x-ratelimit-used
+            header_down -x-ratelimit-resource
+            header_down -x-ratelimit-reset
             transport http {
                 tls_server_name api.github.com
             }

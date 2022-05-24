@@ -118,13 +118,12 @@ http://hubmirror.v2raya.org {
             header_down X-Pjax-Url github.com hubmirror.v2raya.org
         }
     }
-    handle_path /api/v2fly/* {
-        rewrite * /repos/v2fly{path}
+    handle_path /api/v2rayA/dist-v2ray-rules-dat/tags {
+        rewrite * /repos/v2rayA/dist-v2ray-rules-dat/tags
         reverse_proxy https://api.github.com {
             header_up Host api.github.com
             header_up Accept-Encoding identity
             header_up Referer mirrors.v2raya.org github.com
-            header_up Authorization "Basic ******"
             header_down -x-ratelimit-limit
             header_down -x-ratelimit-remaining
             header_down -x-ratelimit-used
@@ -136,31 +135,7 @@ http://hubmirror.v2raya.org {
         }
         http_cache {
             default_max_age 10m
-            cache_type file
-            path /tmp/cache
-            match_path /
-        }
-    }
-    handle_path /api/v2rayA/* {
-        rewrite * /repos/v2rayA{path}
-        reverse_proxy https://api.github.com {
-            header_up Host api.github.com
-            header_up Accept-Encoding identity
-            header_up Referer mirrors.v2raya.org github.com
-            header_up Authorization "Basic ******"
-            header_down -x-ratelimit-limit
-            header_down -x-ratelimit-remaining
-            header_down -x-ratelimit-used
-            header_down -x-ratelimit-resource
-            header_down -x-ratelimit-reset
-            transport http {
-                tls_server_name api.github.com
-            }
-        }
-        http_cache {
-            default_max_age 10m
-            cache_type file
-            path /tmp/cache
+            cache_type in_memory
             match_path /
         }
     }

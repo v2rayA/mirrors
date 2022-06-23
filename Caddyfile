@@ -3,7 +3,7 @@
     order http_cache after replace
 }
 
-http://apt.v2raya.org, http://apt.v2raya.mzz.pub {
+http://apt.v2raya.org {
     reverse_proxy https://v2raya.github.io {
         header_up Host apt.v2raya.org
     }

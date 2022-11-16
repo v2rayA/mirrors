@@ -1,15 +1,18 @@
 {
     order replace after encode
     order http_cache after replace
+    auto_https disable_redirects
+    acme_dns cloudflare *
+    cert_issuer zerossl
 }
 
-http://apt.v2raya.org {
+apt.v2raya.org {
     reverse_proxy https://v2raya.github.io {
         header_up Host apt.v2raya.org
     }
 }
 
-http://mirrors.v2raya.org {
+mirrors.v2raya.org {
     handle_path /go.sh {
         redir https://hubmirror.v2raya.org/raw/v2fly/fhs-install-v2ray/master/install-release.sh
     }
@@ -25,7 +28,7 @@ http://mirrors.v2raya.org {
     }
 }
 
-http://hub-resource.v2raya.org {
+hub-resource.v2raya.org {
     respond /robots.txt 200 {
         body "User-agent: *
 Disallow: /"
@@ -54,21 +57,21 @@ Disallow: /"
     }
 }
 
-http://hubmirror.v2raya.org {
+hubmirror.v2raya.org {
     encode zstd gzip
-    replace api.github.com/repos/v2fly/ hubmirror.v2raya.org/api/v2fly/
+#    replace api.github.com/repos/v2fly/ hubmirror.v2raya.org/api/v2fly/
     replace github.com/v2fly/ hubmirror.v2raya.org/v2fly/
     replace raw.githubusercontent.com/v2fly/ hubmirror.v2raya.org/raw/v2fly/
     replace raw.githubusercontent.workers.dev/v2fly/ hubmirror.v2raya.org/raw/v2fly/
     replace re "github\.com/v2fly/(.+?)/raw/" "hubmirror.v2raya.org/raw/v2fly/$1/"
     
-    replace api.github.com/repos/v2rayA/ hubmirror.v2raya.org/api/v2rayA/
+#    replace api.github.com/repos/v2rayA/ hubmirror.v2raya.org/api/v2rayA/
     replace github.com/v2rayA/ hubmirror.v2raya.org/v2rayA/
     replace raw.githubusercontent.com/v2rayA/ hubmirror.v2raya.org/raw/v2rayA/
     replace raw.githubusercontent.workers.dev/v2rayA/ hubmirror.v2raya.org/raw/v2rayA/
     replace re "github\.com/v2rayA/(.+?)/raw/" "hubmirror.v2raya.org/raw/v2rayA/$1/"
 
-    replace api.github.com/repos/mzz2017/ hubmirror.v2raya.org/api/mzz2017/
+#    replace api.github.com/repos/mzz2017/ hubmirror.v2raya.org/api/mzz2017/
     replace github.com/mzz2017/ hubmirror.v2raya.org/mzz2017/
     replace raw.githubusercontent.com/mzz2017/ hubmirror.v2raya.org/raw/mzz2017/
     replace raw.githubusercontent.workers.dev/mzz2017/ hubmirror.v2raya.org/raw/mzz2017/
@@ -119,6 +122,8 @@ http://hubmirror.v2raya.org {
         }
     }
     handle_path /api/v2rayA/dist-v2ray-rules-dat/tags {
+        redir https://api.github.com/repos/v2rayA/dist-v2ray-rules-dat/tags
+
         rewrite * /repos/v2rayA/dist-v2ray-rules-dat/tags
         reverse_proxy https://api.github.com {
             header_up Host api.github.com

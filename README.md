@@ -6,4 +6,5 @@ https://caddyserver.com/docs/build#xcaddy
 xcaddy build \
     --with github.com/caddyserver/replace-response \
     --with github.com/sillygod/cdp-cache
+    --with github.com/caddy-dns/cloudflare
 ```

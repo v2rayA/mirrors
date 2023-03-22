@@ -70,6 +70,11 @@ hubmirror.v2raya.org {
     replace raw.githubusercontent.com/v2rayA/ hubmirror.v2raya.org/raw/v2rayA/
     replace raw.githubusercontent.workers.dev/v2rayA/ hubmirror.v2raya.org/raw/v2rayA/
     replace re "github\.com/v2rayA/(.+?)/raw/" "hubmirror.v2raya.org/raw/v2rayA/$1/"
+    
+    replace github.com/daeuniverse/ hubmirror.v2raya.org/daeuniverse/
+    replace raw.githubusercontent.com/daeuniverse/ hubmirror.v2raya.org/raw/daeuniverse/
+    replace raw.githubusercontent.workers.dev/daeuniverse/ hubmirror.v2raya.org/raw/daeuniverse/
+    replace re "github\.com/daeuniverse/(.+?)/raw/" "hubmirror.v2raya.org/raw/daeuniverse/$1/"
 
 #    replace api.github.com/repos/mzz2017/ hubmirror.v2raya.org/api/mzz2017/
     replace github.com/mzz2017/ hubmirror.v2raya.org/mzz2017/
@@ -80,6 +85,7 @@ hubmirror.v2raya.org {
     @whitelist {
         path /v2fly/* /v2fly
         path /v2rayA/* /v2rayA
+        path /daeuniverse/* /daeuniverse
         path /mzz2017/* /mzz2017
     }
     handle @whitelist {
@@ -168,6 +174,17 @@ hubmirror.v2raya.org {
     }
     handle_path /raw/v2rayA/* {
         rewrite * /v2rayA{path}
+        reverse_proxy https://raw.githubusercontent.com {
+            header_up Host raw.githubusercontent.com
+            header_up Accept-Encoding identity
+            header_up Referer mirrors.v2raya.org github.com
+            transport http {
+                tls_server_name raw.githubusercontent.com
+            }
+        }
+    }
+    handle_path /raw/daeuniverse/* {
+        rewrite * /daeuniverse{path}
         reverse_proxy https://raw.githubusercontent.com {
             header_up Host raw.githubusercontent.com
             header_up Accept-Encoding identity

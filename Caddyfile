@@ -7,9 +7,10 @@
 }
 
 apt.v2raya.org {
-    reverse_proxy https://v2raya.github.io {
-        header_up Host apt.v2raya.org
-    }
+    redir https://hubmirror.v2raya.org/v2rayA/v2raya-apt/raw/master{uri}
+#    reverse_proxy https://v2raya.github.io {
+#        header_up Host apt.v2raya.org
+#    }
 }
 
 mirrors.v2raya.org {

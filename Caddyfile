@@ -7,19 +7,9 @@
 }
 
 apt.v2raya.org {
-    handle_path /* {
-        rewrite * /raw/v2rayA/v2raya-apt/master{uri}
-        reverse_proxy https://hubmirror.v2raya.org {
-            header_up Host hubmirror.v2raya.org
-            header_down Cache-Control "max-age=300"
-            transport http {
-                tls_server_name hubmirror.v2raya.org
-            }
-        }
+    reverse_proxy https://v2raya.github.io {
+        header_up Host apt.v2raya.org
     }
-#    reverse_proxy https://v2raya.github.io {
-#        header_up Host apt.v2raya.org
-#    }
 }
 
 mirrors.v2raya.org {
